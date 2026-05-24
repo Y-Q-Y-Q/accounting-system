@@ -1,0 +1,3278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中小商铺经营管理会计决策支持系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #d69e2e;
+            --accent-hover: #b7791f;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1a202c;
+            --text-gray: #4a5568;
+            --border: #e2e8f0;
+            --success: #38a169;
+            --warning: #dd6b20;
+            --danger: #e53e3e;
+            --info: #3182ce;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            background: var(--bg-light);
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav.scrolled {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            height: 70px;
+        }
+
+        .nav-logo {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo i {
+            color: var(--accent);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .nav-toggle {
+            display: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            min-height: 100vh;
+            padding: 120px 2rem 80px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(214, 158, 46, 0.2);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+
+        .hero-tag {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .hero-tag:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .hero-tag i {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+
+        .flow-title {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .flow-title i {
+            color: var(--accent);
+        }
+
+        .flow-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .flow-step {
+            background: rgba(255,255,255,0.15);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .flow-arrow {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        /* Module Cards Grid */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            animation: fadeInUp 0.6s ease 0.5s both;
+        }
+
+        .module-card {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .module-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .module-card-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(214, 158, 46, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .module-card-icon i {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .module-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-card p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        /* Sections */
+        .section {
+            padding: 80px 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .section-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title i {
+            color: var(--accent);
+        }
+
+        /* Formula Box */
+        .formula-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            color: white;
+        }
+
+        .formula-box h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .formula {
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2rem;
+            margin: 0.8rem 0;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.2);
+        }
+
+        .formula:last-child {
+            border-bottom: none;
+        }
+
+        .formula-name {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Calculator */
+        .calculator {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .calc-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .calc-title i {
+            color: var(--accent);
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .calc-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calc-input-group label {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .calc-input-group input {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .calc-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-accent:hover {
+            background: var(--accent-hover);
+        }
+
+        .calc-results {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: var(--text-gray);
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .result-value.highlight {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge-warning {
+            background: #feebc8;
+            color: #744210;
+        }
+
+        .badge-danger {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .badge-info {
+            background: #bee3f8;
+            color: #2a4365;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: var(--bg-light);
+        }
+
+        .data-table .highlight-row {
+            background: #fef3c7;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: linear-gradient(to right, #ebf8ff, #f0fff4);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .case-study h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .case-study h4 i {
+            color: var(--accent);
+        }
+
+        .case-calc {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            color: var(--text-gray);
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Flow Section */
+        .flow-section {
+            background: var(--primary);
+            color: white;
+            padding: 80px 2rem;
+        }
+
+        .flow-section .section-header h2 {
+            color: white;
+        }
+
+        .flow-section .section-header p {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .process-flow {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            min-width: 300px;
+        }
+
+        .process-number {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .process-text {
+            font-size: 0.95rem;
+        }
+
+        /* Application Cards */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .app-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            transition: all 0.3s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .app-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .app-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .app-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .app-card p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Value Section */
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .value-item {
+            display: flex;
+            gap: 1rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        }
+
+        .value-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(214, 158, 46, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .value-icon i {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .value-content h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .value-content p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* References */
+        .references {
+            columns: 1;
+            column-gap: 2rem;
+        }
+
+        .reference-item {
+            break-inside: avoid;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Risk Level Colors */
+        .risk-none { background: #c6f6d5; color: #22543d; }
+        .risk-light { background: #feebc8; color: #744210; }
+        .risk-medium { background: #fed7d7; color: #742a2a; }
+        .risk-heavy { background: #fc8181; color: #742a2a; }
+        .risk-extreme { background: #e53e3e; color: white; }
+
+        /* Customer Types */
+        .customer-type {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 0.5rem 0;
+        }
+
+        .customer-type.high-ps {
+            background: linear-gradient(to right, #fed7d7, #fff5f5);
+        }
+
+        .customer-type.low-ps {
+            background: linear-gradient(to right, #c6f6d5, #f0fff4);
+        }
+
+        .customer-type.repurchase {
+            background: linear-gradient(to right, #bee3f8, #ebf8ff);
+        }
+
+        .customer-type.impression {
+            background: linear-gradient(to right, #feebc8, #fffaf0);
+        }
+
+        .customer-type-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* Architecture Diagram */
+        .arch-layer {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .arch-layer.highlight {
+            border-color: var(--accent);
+            background: #fffbeb;
+        }
+
+        .arch-label {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 120px;
+        }
+
+        .arch-desc {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            overflow-x: auto;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 0.75rem 1rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--primary);
+            color: white;
+        }
+
+        .comparison-table .best {
+            background: #c6f6d5;
+            font-weight: 600;
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--primary);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .flow-steps {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+
+            .section {
+                padding: 60px 1rem;
+            }
+
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-step {
+                min-width: 100%;
+            }
+
+            .references {
+                columns: 1;
+            }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-dark);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Alert Box */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-info {
+            background: #ebf8ff;
+            border-left: 4px solid var(--info);
+            color: #2a4365;
+        }
+
+        .alert-success {
+            background: #f0fff4;
+            border-left: 4px solid var(--success);
+            color: #22543d;
+        }
+
+        .alert-warning {
+            background: #fffaf0;
+            border-left: 4px solid var(--warning);
+            color: #744210;
+        }
+
+        .alert i {
+            font-size: 1.2rem;
+        }
+
+        /* Matrix Display */
+        .matrix-display {
+            display: inline-grid;
+            gap: 2px;
+            margin: 1rem 0;
+        }
+
+        .matrix-cell {
+            width: 40px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+        .matrix-cell.header {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Solution Cards */
+        .solution-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .solution-card.winner {
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(214, 158, 46, 0.2);
+        }
+
+        .solution-card.winner .solution-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .solution-name {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>DAAS决策系统</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#hero" class="active">首页</a></li>
+                <li><a href="#module1">数字化系统</a></li>
+                <li><a href="#module2">智能定价</a></li>
+                <li><a href="#module3">产品组合</a></li>
+                <li><a href="#module4">利润预测</a></li>
+                <li><a href="#module5">风险评估</a></li>
+                <li><a href="#module6">消费者行为</a></li>
+                <li><a href="#module7">综合评分</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-container">
+            <span class="hero-badge"><i class="fas fa-star"></i> 管理会计数字化创新</span>
+            <h1>中小商铺经营管理会计<br>决策支持系统</h1>
+            <p class="hero-subtitle">基于CVP分析与消费者行为分析的数字化经营优化平台，为校园小吃店、社区餐饮、早餐铺、奶茶店等中小商铺提供智能决策支持</p>
+            
+            <div class="hero-tags">
+                <span class="hero-tag"><i class="fas fa-calculator"></i> CVP本量利分析</span>
+                <span class="hero-tag"><i class="fas fa-percentage"></i> 边际贡献分析</span>
+                <span class="hero-tag"><i class="fas fa-balance-scale"></i> AHP-TOPSIS评价</span>
+                <span class="hero-tag"><i class="fas fa-chart-bar"></i> 功效系数法</span>
+                <span class="hero-tag"><i class="fas fa-users"></i> 消费者行为模型</span>
+                <span class="hero-tag"><i class="fas fa-database"></i> DAAS业财融合</span>
+            </div>
+
+            <div class="flow-diagram">
+                <div class="flow-title"><i class="fas fa-project-diagram"></i> 系统运行流程</div>
+                <div class="flow-steps">
+                    <div class="flow-step"><i class="fas fa-database"></i><br>数据采集</div>
+                    <i class="fas fa-arrow-right flow-arrow"></i>
+                    <div class="flow-step"><i class="fas fa-cogs"></i><br>DAAS处理</div>
+                    <i class="fas fa-arrow-right flow-arrow"></i>
+                    <div class="flow-step"><i class="fas fa-boxes"></i><br>模型库</div>
+                    <i class="fas fa-arrow-right flow-arrow"></i>
+                    <div class="flow-step"><i class="fas fa-star"></i><br>综合评分</div>
+                    <i class="fas fa-arrow-right flow-arrow"></i>
+                    <div class="flow-step"><i class="fas fa-lightbulb"></i><br>决策输出</div>
+                    <i class="fas fa-arrow-right flow-arrow"></i>
+                    <div class="flow-step"><i class="fas fa-sync"></i><br>结果反馈</div>
+                </div>
+            </div>
+
+            <div class="module-grid">
+                <a href="#module1" class="module-card">
+                    <div class="module-card-icon"><i class="fas fa-laptop-code"></i></div>
+                    <h3>模块一：数字化系统</h3>
+                    <p>DAAS与业财融合平台</p>
+                </a>
+                <a href="#module2" class="module-card">
+                    <div class="module-card-icon"><i class="fas fa-tags"></i></div>
+                    <h3>模块二：智能定价</h3>
+                    <p>CVP与价格感知定价</p>
+                </a>
+                <a href="#module3" class="module-card">
+                    <div class="module-card-icon"><i class="fas fa-boxes"></i></div>
+                    <h3>模块三：产品组合</h3>
+                    <p>边际贡献组合决策</p>
+                </a>
+                <a href="#module4" class="module-card">
+                    <div class="module-card-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>模块四：利润预测</h3>
+                    <p>CVP利润测算分析</p>
+                </a>
+                <a href="#module5" class="module-card">
+                    <div class="module-card-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3>模块五：风险评估</h3>
+                    <p>功效系数与预警</p>
+                </a>
+                <a href="#module6" class="module-card">
+                    <div class="module-card-icon"><i class="fas fa-user-friends"></i></div>
+                    <h3>模块六：消费者行为</h3>
+                    <p>价格感知与复购模型</p>
+                </a>
+                <a href="#module7" class="module-card">
+                    <div class="module-card-icon"><i class="fas fa-trophy"></i></div>
+                    <h3>模块七：综合评分</h3>
+                    <p>AHP-TOPSIS方案排序</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module 1: Digital System -->
+    <section class="section" id="module1">
+        <div class="section-header fade-in">
+            <span class="section-number">1</span>
+            <h2>数字化系统模块</h2>
+            <p>DAAS（Data-Accounting-Analysis-System）数据会计分析系统，实现业财一体化融合</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-info-circle"></i> 模块介绍</div>
+            <p>DAAS数字化系统模块是整个决策支持平台的数据基础，通过对商铺经营数据的全面采集、标准化处理和智能分析，实现业务数据与财务数据的有机融合。系统支持多数据源接入，包括销售数据、成本数据、客流数据等，为后续的管理会计分析提供坚实的数据基础。</p>
+            
+            <div class="alert alert-info" style="margin-top: 1.5rem;">
+                <i class="fas fa-lightbulb"></i>
+                <div>
+                    <strong>核心价值：</strong>将分散的经营数据转化为可分析的结构化信息，为智能决策提供数据支撑。
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-layer-group"></i> 系统架构五层流程</div>
+            <div class="arch-layer">
+                <span class="arch-label"><i class="fas fa-database"></i> 数据层</span>
+                <span class="arch-desc">采集销售、成本、客流、库存等原始经营数据</span>
+            </div>
+            <div class="arch-layer">
+                <span class="arch-label"><i class="fas fa-exchange-alt"></i> 接口层</span>
+                <span class="arch-desc">支持POS、ERP、电子支付等多系统数据接入</span>
+            </div>
+            <div class="arch-layer highlight">
+                <span class="arch-label"><i class="fas fa-magic"></i> DAAS处理层</span>
+                <span class="arch-desc">数据清洗、转换、标准化、关联整合</span>
+            </div>
+            <div class="arch-layer">
+                <span class="arch-label"><i class="fas fa-brain"></i> 模型层</span>
+                <span class="arch-desc">CVP分析、边际贡献、功效系数等管理会计模型</span>
+            </div>
+            <div class="arch-layer">
+                <span class="arch-label"><i class="fas fa-chart-pie"></i> 展示层</span>
+                <span class="arch-desc">可视化报表、决策建议、经营预警</span>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-square-root-alt"></i> 核心公式</div>
+            <div class="formula-box">
+                <h4><i class="fas fa-database"></i> 数据融合公式</h4>
+                <div class="formula">
+                    <div class="formula-name">综合数据融合</div>
+                    D* = ETL(Ds, Dc, Di, Du, Dp, Dr)
+                </div>
+                <div class="formula">
+                    <div class="formula-name">数字化水平指数</div>
+                    DI = 0.4Dc + 0.3Dm + 0.3Dr
+                </div>
+            </div>
+            <div class="formula-box">
+                <h4><i class="fas fa-chart-line"></i> 经营效率公式</h4>
+                <div class="formula">
+                    <div class="formula-name">经营效率</div>
+                    OE = (销售收入 + 经营利润) / (人工成本 + 原料成本 + 租金 + 系统使用成本)
+                </div>
+                <div class="formula">
+                    <div class="formula-name">效率变化率</div>
+                    ΔOE = (OE₁ - OE₀) / OE₀
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-calculator"></i> 数字化水平评估计算器</div>
+            <div class="calculator">
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>已接入数据项数量</label>
+                        <input type="number" id="di1-ds" placeholder="如：8" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>应接入数据项总数</label>
+                        <input type="number" id="di1-total" placeholder="如：12" min="1">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>数据质量评分 (0-100)</label>
+                        <input type="number" id="di1-dq" placeholder="如：85" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>数据时效性评分 (0-100)</label>
+                        <input type="number" id="di1-dt" placeholder="如：90" min="0" max="100">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="calculateDI()">
+                    <i class="fas fa-calculator"></i> 计算数字化水平
+                </button>
+                <div class="calc-results" id="di1-results" style="display:none;">
+                    <div class="result-item">
+                        <span class="result-label">数据覆盖度 (Dc)</span>
+                        <span class="result-value" id="di1-dc">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">数据质量 (Dm)</span>
+                        <span class="result-value" id="di1-dm">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">数据时效性 (Dr)</span>
+                        <span class="result-value" id="di1-dr">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">数字化水平指数 (DI)</span>
+                        <span class="result-value highlight" id="di1-di">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">发展阶段</span>
+                        <span id="di1-stage">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-tasks"></i> 数字化水平阶段对照表</div>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>阶段</th>
+                            <th>DI指数范围</th>
+                            <th>特征描述</th>
+                            <th>建议措施</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>初始级</strong></td>
+                            <td>0-40</td>
+                            <td>数据采集零散，缺乏统一标准</td>
+                            <td>建立基础数据采集流程</td>
+                        </tr>
+                        <tr>
+                            <td><strong>规范级</strong></td>
+                            <td>40-60</td>
+                            <td>核心业务数据已接入，但分析能力不足</td>
+                            <td>部署DAAS基础模块</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td><strong>优化级</strong></td>
+                            <td>60-80</td>
+                            <td>数据质量良好，具备基本分析能力</td>
+                            <td>引入管理会计模型</td>
+                        </tr>
+                        <tr>
+                            <td><strong>卓越级</strong></td>
+                            <td>80-100</td>
+                            <td>数据驱动决策，实时智能预警</td>
+                            <td>持续优化与迭代</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module 2: Smart Pricing -->
+    <section class="section" id="module2" style="background: white;">
+        <div class="section-header fade-in">
+            <span class="section-number">2</span>
+            <h2>智能定价模块</h2>
+            <p>基于CVP分析的智能定价决策，支持价格变动敏感度分析</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-info-circle"></i> 模块介绍</div>
+            <p>智能定价模块将传统的CVP（本量利）分析与现代消费者价格感知理论相结合，帮助商铺找到最优定价策略。通过分析变动成本、固定成本与定价的关系，计算保本点销量，并结合消费者价格敏感度，制定既能保证利润又符合市场接受度的价格方案。</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-square-root-alt"></i> 核心公式</div>
+            <div class="formula-box">
+                <h4><i class="fas fa-chart-line"></i> CVP基本公式</h4>
+                <div class="formula">
+                    <div class="formula-name">利润模型</div>
+                    π = (P - VC) × Q - FC
+                </div>
+                <div class="formula">
+                    <div class="formula-name">保本销量</div>
+                    BEP = FC / (P - VC)
+                </div>
+            </div>
+            <div class="formula-box">
+                <h4><i class="fas fa-percentage"></i> 边际贡献公式</h4>
+                <div class="formula">
+                    <div class="formula-name">单位边际贡献</div>
+                    MC = P - VC
+                </div>
+                <div class="formula">
+                    <div class="formula-name">边际贡献率</div>
+                    MCR = MC / P × 100%
+                </div>
+            </div>
+            <div class="formula-box">
+                <h4><i class="fas fa-gift"></i> 价格优惠公式</h4>
+                <div class="formula">
+                    <div class="formula-name">绝对优惠额</div>
+                    AO = P₀ - P₁
+                </div>
+                <div class="formula">
+                    <div class="formula-name">相对优惠率</div>
+                    RO = (P₀ - P₁) / P₀ × 100%
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-calculator"></i> 智能定价计算器</div>
+            <div class="calculator">
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>单价 P (元)</label>
+                        <input type="number" id="price-p" placeholder="如：3" step="0.1" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>单位变动成本 VC (元)</label>
+                        <input type="number" id="price-vc" placeholder="如：1" step="0.1" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>固定成本 FC (元/天)</label>
+                        <input type="number" id="price-fc" placeholder="如：100" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>预计销量 Q (件/天)</label>
+                        <input type="number" id="price-q" placeholder="如：80" min="0">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="calculatePricing()">
+                    <i class="fas fa-calculator"></i> 计算定价方案
+                </button>
+                <div class="calc-results" id="price-results" style="display:none;">
+                    <div class="result-item">
+                        <span class="result-label">单位边际贡献 (MC)</span>
+                        <span class="result-value" id="price-mc">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">边际贡献率 (MCR)</span>
+                        <span class="result-value" id="price-mcr">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">保本销量 (BEP)</span>
+                        <span class="result-value" id="price-bep">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">预计利润 (π)</span>
+                        <span class="result-value" id="price-profit">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">安全边际量</span>
+                        <span class="result-value" id="price-safety">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">安全边际率</span>
+                        <span id="price-safety-rate">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-arrow-up"></i> 涨价可行性分析</div>
+            <div class="calculator">
+                <p style="margin-bottom: 1rem; color: var(--text-gray);">分析从原价调整到新价后，销量下降多少仍可保持盈利</p>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>原价 P₀ (元)</label>
+                        <input type="number" id="price0" placeholder="如：2.5" step="0.1" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>新价 P₁ (元)</label>
+                        <input type="number" id="price1" placeholder="如：3" step="0.1" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>当前销量 Q₀ (件)</label>
+                        <input type="number" id="q0" placeholder="如：100" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>单位变动成本 VC (元)</label>
+                        <input type="number" id="vc-change" placeholder="如：1" step="0.1" min="0">
+                    </div>
+                </div>
+                <button class="btn btn-accent" onclick="calculatePriceChange()">
+                    <i class="fas fa-search"></i> 分析涨价可行性
+                </button>
+                <div class="calc-results" id="change-results" style="display:none;">
+                    <div class="result-item">
+                        <span class="result-label">绝对优惠额</span>
+                        <span class="result-value" id="change-ao">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">相对优惠率</span>
+                        <span class="result-value" id="change-ro">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">销量下降临界值</span>
+                        <span class="result-value highlight" id="change-critical">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">临界销量</span>
+                        <span class="result-value" id="change-min-q">-</span>
+                    </div>
+                    <div class="alert alert-success" id="change-advice" style="display:none; margin-top: 1rem;">
+                        <i class="fas fa-check-circle"></i>
+                        <span id="change-message">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-store"></i> 案例分析：A店烤肠定价决策</div>
+            <div class="case-study">
+                <h4><i class="fas fa-store"></i> A店烤肠经营数据</h4>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>参数</th>
+                                <th>方案A（原方案）</th>
+                                <th>方案B（涨价方案）</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>单价 P</td>
+                                <td>2.5元</td>
+                                <td>3元</td>
+                            </tr>
+                            <tr>
+                                <td>变动成本 VC</td>
+                                <td>1元</td>
+                                <td>1元</td>
+                            </tr>
+                            <tr>
+                                <td>日固定成本分摊</td>
+                                <td>100元</td>
+                                <td>100元</td>
+                            </tr>
+                            <tr>
+                                <td>日均销量</td>
+                                <td>80根</td>
+                                <td>预计60根</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="case-calc">
+                    <strong>方案A计算：</strong><br>
+                    MC = 2.5 - 1 = 1.5元<br>
+                    BEP = 100 / 1.5 ≈ 67根<br>
+                    π = (2.5 - 1) × 80 - 100 = 20元
+                </div>
+
+                <div class="case-calc">
+                    <strong>方案B计算：</strong><br>
+                    MC = 3 - 1 = 2元<br>
+                    BEP = 100 / 2 = 50根<br>
+                    π = (3 - 1) × 60 - 100 = 20元<br>
+                    <strong style="color: var(--accent);">结论：涨价后销量下降不超过33%即可保持盈利</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module 3: Product Mix -->
+    <section class="section" id="module3">
+        <div class="section-header fade-in">
+            <span class="section-number">3</span>
+            <h2>产品组合利润优化模块</h2>
+            <p>基于边际贡献分析的最优产品组合决策</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-info-circle"></i> 模块介绍</div>
+            <p>产品组合优化模块通过边际贡献分析法，帮助商铺评估不同产品或产品组合的盈利能力。系统支持单品与套餐的对比分析，计算各产品的边际贡献率，并基于加权平均计算组合边际贡献率，为产品结构调整提供数据支撑。</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-square-root-alt"></i> 核心公式</div>
+            <div class="formula-box">
+                <h4><i class="fas fa-percentage"></i> 边际贡献公式</h4>
+                <div class="formula">
+                    <div class="formula-name">单位边际贡献</div>
+                    cmi = pi - bi
+                </div>
+                <div class="formula">
+                    <div class="formula-name">总边际贡献</div>
+                    Tcmi = (pi - bi) × xi
+                </div>
+                <div class="formula">
+                    <div class="formula-name">边际贡献率</div>
+                    cmRi = cmi / pi × 100%
+                </div>
+            </div>
+            <div class="formula-box">
+                <h4><i class="fas fa-calculator"></i> 组合分析公式</h4>
+                <div class="formula">
+                    <div class="formula-name">加权边际贡献率</div>
+                    cmR = Σ(cmRi × wi)
+                </div>
+                <div class="formula">
+                    <div class="formula-name">组合利润</div>
+                    R = Σ(Pi - Vi) × Qi - F
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-calculator"></i> 产品组合对比计算器</div>
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('single')">单品分析</button>
+                <button class="tab" onclick="switchTab('combo')">套餐分析</button>
+            </div>
+
+            <div class="tab-content active" id="tab-single">
+                <div class="calculator">
+                    <h4 style="margin-bottom: 1rem; color: var(--primary);">单品利润计算</h4>
+                    <div class="calc-grid">
+                        <div class="calc-input-group">
+                            <label>产品名称</label>
+                            <input type="text" id="single-name" placeholder="如：烤肠">
+                        </div>
+                        <div class="calc-input-group">
+                            <label>单价 P (元)</label>
+                            <input type="number" id="single-price" placeholder="如：3" step="0.1" min="0">
+                        </div>
+                        <div class="calc-input-group">
+                            <label>单位成本 VC (元)</label>
+                            <input type="number" id="single-cost" placeholder="如：1" step="0.1" min="0">
+                        </div>
+                        <div class="calc-input-group">
+                            <label>日销量 Q</label>
+                            <input type="number" id="single-qty" placeholder="如：80" min="0">
+                        </div>
+                        <div class="calc-input-group">
+                            <label>固定成本 F (元/天)</label>
+                            <input type="number" id="single-fc" placeholder="如：100" min="0">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateSingle()">
+                        <i class="fas fa-calculator"></i> 计算单品利润
+                    </button>
+                    <div class="calc-results" id="single-results" style="display:none;">
+                        <div class="result-item">
+                            <span class="result-label">单位边际贡献</span>
+                            <span class="result-value" id="single-mc">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">边际贡献率</span>
+                            <span class="result-value" id="single-mcr">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">总边际贡献</span>
+                            <span class="result-value" id="single-tcm">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">单品利润</span>
+                            <span class="result-value highlight" id="single-profit">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-combo">
+                <div class="calculator">
+                    <h4 style="margin-bottom: 1rem; color: var(--primary);">套餐 vs 单品对比</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <h5 style="color: var(--text-gray); margin-bottom: 1rem;">套餐方案（6元3根）</h5>
+                            <div class="calc-input-group">
+                                <label>套餐价格</label>
+                                <input type="number" id="combo-price" value="6" step="0.1">
+                            </div>
+                            <div class="calc-input-group">
+                                <label>套餐包含数量</label>
+                                <input type="number" id="combo-qty" value="3" min="1">
+                            </div>
+                            <div class="calc-input-group">
+                                <label>套餐单位成本</label>
+                                <input type="number" id="combo-cost" value="3" step="0.1">
+                            </div>
+                            <div class="calc-input-group">
+                                <label>套餐预计销量/天</label>
+                                <input type="number" id="combo-sales" value="40" min="0">
+                            </div>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--text-gray); margin-bottom: 1rem;">单品方案（2元/根）</h5>
+                            <div class="calc-input-group">
+                                <label>单品价格</label>
+                                <input type="number" id="single2-price" value="2" step="0.1">
+                            </div>
+                            <div class="calc-input-group">
+                                <label>单品单位成本</label>
+                                <input type="number" id="single2-cost" value="1" step="0.1">
+                            </div>
+                            <div class="calc-input-group">
+                                <label>单品预计销量/天</label>
+                                <input type="number" id="single2-sales" value="120" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calc-input-group" style="margin-top: 1rem;">
+                        <label>固定成本 F (元/天)</label>
+                        <input type="number" id="combo-fc" value="100">
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateCombo()">
+                        <i class="fas fa-balance-scale"></i> 对比分析
+                    </button>
+                    <div class="calc-results" id="combo-results" style="display:none;">
+                        <table class="data-table" style="margin-top: 1rem;">
+                            <thead>
+                                <tr>
+                                    <th>指标</th>
+                                    <th>套餐方案</th>
+                                    <th>单品方案</th>
+                                    <th>更优</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>总收入</td>
+                                    <td id="combo-revenue">-</td>
+                                    <td id="single2-revenue">-</td>
+                                    <td id="combo-revenue-better">-</td>
+                                </tr>
+                                <tr>
+                                    <td>边际贡献率</td>
+                                    <td id="combo-mcr">-</td>
+                                    <td id="single2-mcr">-</td>
+                                    <td id="combo-mcr-better">-</td>
+                                </tr>
+                                <tr>
+                                    <td>日利润</td>
+                                    <td id="combo-profit">-</td>
+                                    <td id="single2-profit">-</td>
+                                    <td id="combo-profit-better">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-store"></i> 案例分析："6元3根"套餐决策</div>
+            <div class="case-study">
+                <h4><i class="fas fa-fire"></i> A店烤肠套餐优化案例</h4>
+                <p>原方案：单根烤肠2元，成本1元，日销120根</p>
+                <p>新方案："6元3根"套餐，价格降至2元/根，但刺激销量提升</p>
+                
+                <div class="case-calc">
+                    <strong>原方案计算：</strong><br>
+                    边际贡献率 = (2-1)/2 = 50%<br>
+                    日边际贡献 = (2-1) × 120 = 120元<br>
+                    日利润 = 120 - 100 = 20元
+                </div>
+
+                <div class="case-calc">
+                    <strong>套餐方案计算：</strong><br>
+                    套餐边际贡献 = 6 - 3 = 3元/套餐<br>
+                    套餐边际贡献率 = 3/6 = 50%<br>
+                    若销量提升至150根（50个套餐）：<br>
+                    日边际贡献 = 3 × 50 = 150元<br>
+                    日利润 = 150 - 100 = 50元<br>
+                    <strong style="color: var(--success);">✓ 利润提升150%！</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module 4: Profit Prediction -->
+    <section class="section" id="module4" style="background: white;">
+        <div class="section-header fade-in">
+            <span class="section-number">4</span>
+            <h2>利润预测模块</h2>
+            <p>CVP利润测算与安全边际分析</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-info-circle"></i> 模块介绍</div>
+            <p>利润预测模块基于CVP分析原理，帮助商铺预测不同销量下的利润水平，计算实现目标利润所需的销量，并进行安全边际分析。同时提供敏感系数分析，帮助经营者了解各因素变化对利润的影响程度。</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-square-root-alt"></i> 核心公式</div>
+            <div class="formula-box">
+                <h4><i class="fas fa-chart-line"></i> 利润预测公式</h4>
+                <div class="formula">
+                    <div class="formula-name">多产品利润模型</div>
+                    π = Σ(Pi - VCi) × Qi - FC
+                </div>
+                <div class="formula">
+                    <div class="formula-name">目标利润销量</div>
+                    QTP = (FC + TP) / (P - VC)
+                </div>
+            </div>
+            <div class="formula-box">
+                <h4><i class="fas fa-shield-alt"></i> 安全边际公式</h4>
+                <div class="formula">
+                    <div class="formula-name">安全边际量</div>
+                    SM = AO - BEP
+                </div>
+                <div class="formula">
+                    <div class="formula-name">安全边际率</div>
+                    SMR = SM / AO × 100%
+                </div>
+            </div>
+            <div class="formula-box">
+                <h4><i class="fas fa-temperature-high"></i> 敏感系数</h4>
+                <div class="formula">
+                    <div class="formula-name">敏感系数</div>
+                    SF = (Δπ/π) / (ΔX/X)
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-calculator"></i> 利润预测计算器</div>
+            <div class="calculator">
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>单价 P (元)</label>
+                        <input type="number" id="pred-p" placeholder="如：3" step="0.1" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>单位变动成本 VC (元)</label>
+                        <input type="number" id="pred-vc" placeholder="如：1.2" step="0.1" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>固定成本 FC (元)</label>
+                        <input type="number" id="pred-fc" placeholder="如：150" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>预计销量 Q</label>
+                        <input type="number" id="pred-q" placeholder="如：100" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>目标利润 TP (元)</label>
+                        <input type="number" id="pred-tp" placeholder="如：200" min="0">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="calculateProfit()">
+                    <i class="fas fa-chart-line"></i> 预测利润
+                </button>
+                <div class="calc-results" id="pred-results" style="display:none;">
+                    <div class="result-item">
+                        <span class="result-label">单位边际贡献</span>
+                        <span class="result-value" id="pred-mc">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">边际贡献率</span>
+                        <span class="result-value" id="pred-mcr">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">保本销量</span>
+                        <span class="result-value" id="pred-bep">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">预计利润</span>
+                        <span class="result-value highlight" id="pred-profit">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">实现目标利润所需销量</span>
+                        <span class="result-value" id="pred-target-q">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">安全边际量</span>
+                        <span class="result-value" id="pred-sm">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">安全边际率</span>
+                        <span id="pred-smr">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-table"></i> 安全边际率等级判断</div>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>安全边际率</th>
+                            <th>安全程度</th>
+                            <th>经营状态</th>
+                            <th>建议措施</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SMR > 40%</td>
+                            <td><span class="result-badge badge-success">安全</span></td>
+                            <td>经营状况良好，盈利空间大</td>
+                            <td>保持现状，适度扩张</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td>20% < SMR ≤ 40%</td>
+                            <td><span class="result-badge badge-info">较安全</span></td>
+                            <td>经营基本稳定</td>
+                            <td>关注市场变化，保持竞争力</td>
+                        </tr>
+                        <tr>
+                            <td>10% < SMR ≤ 20%</td>
+                            <td><span class="result-badge badge-warning">警戒</span></td>
+                            <td>盈利空间有限</td>
+                            <td>采取措施提升销量或降低成本</td>
+                        </tr>
+                        <tr>
+                            <td>SMR ≤ 10%</td>
+                            <td><span class="result-badge badge-danger">危险</span></td>
+                            <td>经营状况堪忧</td>
+                            <td>急需调整经营策略</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-fire"></i> 敏感性分析</div>
+            <div class="calculator">
+                <p style="margin-bottom: 1rem; color: var(--text-gray);">分析各因素变化对利润的影响程度</p>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>当前利润 π (元)</label>
+                        <input type="number" id="sense-profit" placeholder="如：100" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>价格变化幅度 (%)</label>
+                        <input type="number" id="sense-price" placeholder="如：10" value="10">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>销量变化幅度 (%)</label>
+                        <input type="number" id="sense-qty" placeholder="如：10" value="10">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>成本变化幅度 (%)</label>
+                        <input type="number" id="sense-cost" placeholder="如：10" value="10">
+                    </div>
+                </div>
+                <button class="btn btn-accent" onclick="calculateSensitivity()">
+                    <i class="fas fa-fire"></i> 计算敏感系数
+                </button>
+                <div class="calc-results" id="sense-results" style="display:none;">
+                    <div class="result-item">
+                        <span class="result-label">价格敏感系数</span>
+                        <span class="result-value" id="sense-price-sf">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">销量敏感系数</span>
+                        <span class="result-value" id="sense-qty-sf">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">成本敏感系数</span>
+                        <span class="result-value" id="sense-cost-sf">-</span>
+                    </div>
+                    <div class="alert alert-info" style="margin-top: 1rem;">
+                        <i class="fas fa-info-circle"></i>
+                        <span id="sense-analysis">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module 5: Risk Assessment -->
+    <section class="section" id="module5">
+        <div class="section-header fade-in">
+            <span class="section-number">5</span>
+            <h2>风险评估模块</h2>
+            <p>基于功效系数法的综合风险评估与现金流预警</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-info-circle"></i> 模块介绍</p>
+            <p>风险评估模块采用功效系数法原理，构建包含盈利能力、运营效率、顾客价值、风险控制四个维度的综合评价体系。通过对6项核心指标的量化分析，计算综合功效系数，并结合现金流预警模型，实现经营风险的实时监测与预警。</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-square-root-alt"></i> 核心公式</div>
+            <div class="formula-box">
+                <h4><i class="fas fa-percentage"></i> 功效系数公式</h4>
+                <div class="formula">
+                    <div class="formula-name">正向指标（越大越好）</div>
+                    Ei = 60 + 40 × (Xi - Ximin) / (Xis - Ximin)
+                </div>
+                <div class="formula">
+                    <div class="formula-name">反向指标（越小越好）</div>
+                    Ei = 60 + 40 × (Ximax - Xi) / (Ximax - Xis)
+                </div>
+                <div class="formula">
+                    <div class="formula-name">综合功效系数</div>
+                    G = Σ(Ei × wi)
+                </div>
+            </div>
+            <div class="formula-box">
+                <h4><i class="fas fa-bell"></i> 现金流预警公式</h4>
+                <div class="formula">
+                    <div class="formula-name">现金流预警指数</div>
+                    FEWI = 0.3FEWI1 + 0.4FEWI2 + 0.3FEWI3
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-calculator"></i> 风险评估计算器</div>
+            <div class="calculator">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>输入各指标实际值，系统将计算综合功效系数并给出风险等级</div>
+                </div>
+                <h4 style="margin: 1rem 0; color: var(--primary);">第一类：盈利能力指标</h4>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>净资产收益率 (%)</label>
+                        <input type="number" id="risk-roe" placeholder="如：15" step="0.1">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>销售净利率 (%)</label>
+                        <input type="number" id="risk-npm" placeholder="如：8" step="0.1">
+                    </div>
+                </div>
+                <h4 style="margin: 1rem 0; color: var(--primary);">第二类：运营效率指标</h4>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>存货周转率 (次)</label>
+                        <input type="number" id="risk-inv" placeholder="如：8" step="0.1">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>应收账款周转率 (次)</label>
+                        <input type="number" id="risk-ar" placeholder="如：12" step="0.1">
+                    </div>
+                </div>
+                <h4 style="margin: 1rem 0; color: var(--primary);">第三类：顾客价值指标</h4>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>顾客满意度 (分)</label>
+                        <input type="number" id="risk-cs" placeholder="如：85" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>复购率 (%)</label>
+                        <input type="number" id="risk-rr" placeholder="如：40" step="0.1">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="calculateRisk()">
+                    <i class="fas fa-shield-alt"></i> 评估风险等级
+                </button>
+                <div class="calc-results" id="risk-results" style="display:none;">
+                    <div class="result-item">
+                        <span class="result-label">净资产收益率功效系数</span>
+                        <span class="result-value" id="risk-roe-e">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">销售净利率功效系数</span>
+                        <span class="result-value" id="risk-npm-e">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">存货周转率功效系数</span>
+                        <span class="result-value" id="risk-inv-e">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">应收账款周转率功效系数</span>
+                        <span class="result-value" id="risk-ar-e">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">顾客满意度功效系数</span>
+                        <span class="result-value" id="risk-cs-e">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">复购率功效系数</span>
+                        <span class="result-value" id="risk-rr-e">-</span>
+                    </div>
+                    <div class="result-item" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <span class="result-label"><strong>综合功效系数 G</strong></span>
+                        <span class="result-value highlight" id="risk-g">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">风险等级</span>
+                        <span id="risk-level">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">风险状态</span>
+                        <span id="risk-status">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-exclamation-circle"></i> 风险等级对照表</div>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>预警等级</th>
+                            <th>G值范围</th>
+                            <th>风险程度</th>
+                            <th>状态描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="result-badge risk-none">无警</span></td>
+                            <td>G ≥ 80</td>
+                            <td>低风险</td>
+                            <td>经营状况优良，继续保持</td>
+                        </tr>
+                        <tr>
+                            <td><span class="result-badge risk-light">轻警</span></td>
+                            <td>70 ≤ G < 80</td>
+                            <td>较低风险</td>
+                            <td>存在小问题，需关注改进</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td><span class="result-badge risk-medium">中警</span></td>
+                            <td>60 ≤ G < 70</td>
+                            <td>中等风险</td>
+                            <td>存在较大问题，需重点关注</td>
+                        </tr>
+                        <tr>
+                            <td><span class="result-badge risk-heavy">重警</span></td>
+                            <td>50 ≤ G < 60</td>
+                            <td>较高风险</td>
+                            <td>存在严重问题，需紧急处理</td>
+                        </tr>
+                        <tr>
+                            <td><span class="result-badge risk-extreme">巨警</span></td>
+                            <td>G < 50</td>
+                            <td>高风险</td>
+                            <td>面临生存危机，需立即整改</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-list"></i> 6项指标体系</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>指标类别</th>
+                        <th>具体指标</th>
+                        <th>指标性质</th>
+                        <th>权重</th>
+                        <th>优秀值</th>
+                        <th>较差值</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="2">盈利能力</td>
+                        <td>净资产收益率</td>
+                        <td>正向</td>
+                        <td>20%</td>
+                        <td>20%</td>
+                        <td>5%</td>
+                    </tr>
+                    <tr>
+                        <td>销售净利率</td>
+                        <td>正向</td>
+                        <td>15%</td>
+                        <td>12%</td>
+                        <td>3%</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">运营效率</td>
+                        <td>存货周转率</td>
+                        <td>正向</td>
+                        <td>15%</td>
+                        <td>12次</td>
+                        <td>4次</td>
+                    </tr>
+                    <tr>
+                        <td>应收账款周转率</td>
+                        <td>正向</td>
+                        <td>10%</td>
+                        <td>15次</td>
+                        <td>5次</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">顾客价值</td>
+                        <td>顾客满意度</td>
+                        <td>正向</td>
+                        <td>20%</td>
+                        <td>95分</td>
+                        <td>70分</td>
+                    </tr>
+                    <tr>
+                        <td>复购率</td>
+                        <td>正向</td>
+                        <td>20%</td>
+                        <td>60%</td>
+                        <td>20%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Module 6: Consumer Behavior -->
+    <section class="section" id="module6" style="background: white;">
+        <div class="section-header fade-in">
+            <span class="section-number">6</span>
+            <h2>消费者行为分析模块</h2>
+            <p>价格感知与复购行为模型</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-info-circle"></i> 模块介绍</div>
+            <p>消费者行为分析模块通过构建价格敏感度指数、价格判断指数、心理预期指数和复购行为模型，系统分析消费者的价格感知和购买决策过程。基于CBS（消费者行为评分）综合评估，识别不同类型的顾客特征，为精准营销提供数据支持。</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-square-root-alt"></i> 核心公式</div>
+            <div class="formula-box">
+                <h4><i class="fas fa-tag"></i> 价格感知公式</h4>
+                <div class="formula">
+                    <div class="formula-name">价格敏感度指数</div>
+                    PSi = |(ΔQi/Qi) / (ΔPi/Pi)|
+                </div>
+                <div class="formula">
+                    <div class="formula-name">价格判断指数</div>
+                    PJi = β0 + β1Di + β2Fi - β3JDi
+                </div>
+                <div class="formula">
+                    <div class="formula-name">心理预期综合评分</div>
+                    CE = (SE + EE + BE + TE) / 4
+                </div>
+            </div>
+            <div class="formula-box">
+                <h4><i class="fas fa-sync"></i> 复购与综合评分公式</h4>
+                <div class="formula">
+                    <div class="formula-name">复购行为模型</div>
+                    RB = γ0 + γ1SE + γ2EE + γ3BE + γ4TE + γ5PS + γ6(CE × PS)
+                </div>
+                <div class="formula">
+                    <div class="formula-name">购买意向指数</div>
+                    PI = θ0 + θ1PQ + θ2PV + θ3SI - θ4PS
+                </div>
+                <div class="formula">
+                    <div class="formula-name">消费者行为评分</div>
+                    CBS = 100 × (w1PI + w2RB + w3SI + w4PV - w5PS)
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-calculator"></i> 消费者行为评分计算器</div>
+            <div class="calculator">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>输入顾客各维度评分（0-100分），系统将计算CBS综合评分并识别顾客类型</div>
+                </div>
+                <h4 style="margin: 1rem 0; color: var(--primary);">心理预期维度</h4>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>服务期望 SE (0-100)</label>
+                        <input type="number" id="cbs-se" placeholder="如：80" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>体验期望 EE (0-100)</label>
+                        <input type="number" id="cbs-ee" placeholder="如：75" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>品牌期望 BE (0-100)</label>
+                        <input type="number" id="cbs-be" placeholder="如：70" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>性价比期望 TE (0-100)</label>
+                        <input type="number" id="cbs-te" placeholder="如：85" min="0" max="100">
+                    </div>
+                </div>
+                <h4 style="margin: 1rem 0; color: var(--primary);">价格感知维度</h4>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>价格感知 PQ (0-100)</label>
+                        <input type="number" id="cbs-pq" placeholder="如：60" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>感知价值 PV (0-100)</label>
+                        <input type="number" id="cbs-pv" placeholder="如：70" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>价格敏感度 PS (0-100)</label>
+                        <input type="number" id="cbs-ps" placeholder="如：65" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>店铺忠诚度 SI (0-100)</label>
+                        <input type="number" id="cbs-si" placeholder="如：55" min="0" max="100">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="calculateCBS()">
+                    <i class="fas fa-user"></i> 评估顾客行为
+                </button>
+                <div class="calc-results" id="cbs-results" style="display:none;">
+                    <div class="result-item">
+                        <span class="result-label">心理预期综合 CE</span>
+                        <span class="result-value" id="cbs-ce">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">复购行为指数 RB</span>
+                        <span class="result-value" id="cbs-rb">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">购买意向指数 PI</span>
+                        <span class="result-value" id="cbs-pi">-</span>
+                    </div>
+                    <div class="result-item" style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <span class="result-label"><strong>消费者行为评分 CBS</strong></span>
+                        <span class="result-value highlight" id="cbs-score">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">顾客类型</span>
+                        <span id="cbs-type">-</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">营销建议</span>
+                        <span id="cbs-advice">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-users"></i> 4类顾客识别</div>
+            <div class="customer-type high-ps">
+                <div class="customer-type-icon" style="background: #fed7d7; color: #c53030;">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <div>
+                    <strong>高价格敏感型</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-gray);">PS > 70, SI < 50<br>特点：对价格敏感度极高，促销敏感，易被优惠吸引<br>策略：推送优惠券、满减活动</p>
+                </div>
+            </div>
+            <div class="customer-type low-ps">
+                <div class="customer-type-icon" style="background: #c6f6d5; color: #276749;">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <div>
+                    <strong>低价格敏感型</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-gray);">PS < 50, PV > 70<br>特点：更关注品质和服务，价格不是首要考量<br>策略：强调品质、提供增值服务</p>
+                </div>
+            </div>
+            <div class="customer-type repurchase">
+                <div class="customer-type-icon" style="background: #bee3f8; color: #2b6cb0;">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div>
+                    <strong>复购潜力型</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-gray);">SI > 60, CE > 75<br>特点：对店铺认可度高，有较强的忠诚度<br>策略：会员制度、积分奖励、专属优惠</p>
+                </div>
+            </div>
+            <div class="customer-type impression">
+                <div class="customer-type-icon" style="background: #feebc8; color: #c05621;">
+                    <i class="fas fa-comment-alt"></i>
+                </div>
+                <div>
+                    <strong>门店印象短板型</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-gray);">PI < 60, PV < 60<br>特点：对店铺印象不佳，购买意向低<br>策略：改善服务流程、提升产品体验</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module 7: Comprehensive Evaluation -->
+    <section class="section" id="module7">
+        <div class="section-header fade-in">
+            <span class="section-number">7</span>
+            <h2>综合评分公式模块</h2>
+            <p>基于AHP-TOPSIS的多方案综合评价与排序</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-info-circle"></i> 模块介绍</div>
+            <p>综合评分模块采用AHP层次分析法确定指标权重，结合TOPSIS理想解逼近法对多个经营方案进行综合评价。通过构建"盈利能力、运营效率、顾客价值、风险控制"四维度评价体系，实现方案的客观排序，为经营决策提供科学依据。</p>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-square-root-alt"></i> 核心公式</div>
+            <div class="formula-box">
+                <h4><i class="fas fa-layer-group"></i> AHP权重计算</h4>
+                <div class="formula">
+                    <div class="formula-name">一致性指标</div>
+                    CI = (λmax - n) / (n - 1)
+                </div>
+                <div class="formula">
+                    <div class="formula-name">一致性比率</div>
+                    CR = CI / RI
+                </div>
+                <div class="formula">
+                    <div class="formula-name">权重向量</div>
+                    w = (w1, w2, w3, w4)
+                </div>
+            </div>
+            <div class="formula-box">
+                <h4><i class="fas fa-sort-amount-up"></i> TOPSIS排序</h4>
+                <div class="formula">
+                    <div class="formula-name">规范化决策矩阵</div>
+                    zij = xij / √(Σxij²)
+                </div>
+                <div class="formula">
+                    <div class="formula-name">加权规范化矩阵</div>
+                    vij = wij × zij
+                </div>
+                <div class="formula">
+                    <div class="formula-name">贴近度</div>
+                    Ci = D- / (D+ + D-)
+                </div>
+            </div>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-table"></i> 四维度指标体系</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>维度</th>
+                        <th>指标</th>
+                        <th>说明</th>
+                        <th>参考权重</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>盈利能力</strong></td>
+                        <td>利润率</td>
+                        <td>衡量项目获利能力</td>
+                        <td>30%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>运营效率</strong></td>
+                        <td>周转率</td>
+                        <td>衡量资源使用效率</td>
+                        <td>25%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>顾客价值</strong></td>
+                        <td>满意度/复购率</td>
+                        <td>衡量顾客认可度</td>
+                        <td>25%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>风险控制</strong></td>
+                        <td>风险指数</td>
+                        <td>衡量经营风险水平</td>
+                        <td>20%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card fade-in">
+            <div class="card-title"><i class="fas fa-calculator"></i> 方案综合评分计算器</div>
+            <div class="calculator">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>输入各方案在四个维度的评分（0-100分），系统将计算综合评分并排序</div>
+                </div>
+                <h4 style="margin: 1rem 0; color: var(--primary);">方案一</h4>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>方案名称</label>
+                        <input type="text" id="plan1-name" value="维持原价" placeholder="方案名称">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>盈利能力 (0-100)</label>
+                        <input type="number" id="plan1-profit" value="70" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>运营效率 (0-100)</label>
+                        <input type="number" id="plan1-efficiency" value="75" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>顾客价值 (0-100)</label>
+                        <input type="number" id="plan1-customer" value="70" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>风险控制 (0-100)</label>
+                        <input type="number" id="plan1-risk" value="80" min="0" max="100">
+                    </div>
+                </div>
+                
+                <h4 style="margin: 1rem 0; color: var(--primary);">方案二</h4>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>方案名称</label>
+                        <input type="text" id="plan2-name" value="6元3根套餐" placeholder="方案名称">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>盈利能力 (0-100)</label>
+                        <input type="number" id="plan2-profit" value="80" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>运营效率 (0-100)</label>
+                        <input type="number" id="plan2-efficiency" value="85" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>顾客价值 (0-100)</label>
+                        <input type="number" id="plan2-customer" value="85" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>风险控制 (0-100)</label>
+                        <input type="number" id="plan2-risk" value="70" min="0" max="100">
+                    </div>
+                </div>
+
+                <h4 style="margin: 1rem 0; color: var(--primary);">方案三</h4>
+                <div class="calc-grid">
+                    <div class="calc-input-group">
+                        <label>方案名称</label>
+                        <input type="text" id="plan3-name" value="直接降价" placeholder="方案名称">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>盈利能力 (0-100)</label>
+                        <input type="number" id="plan3-profit" value="60" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>运营效率 (0-100)</label>
+                        <input type="number" id="plan3-efficiency" value="70" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>顾客价值 (0-100)</label>
+                        <input type="number" id="plan3-customer" value="90" min="0" max="100">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>风险控制 (0-100)</label>
+                        <input type="number" id="plan3-risk" value="65" min="0" max="100">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="calculateTOPSIS()">
+                    <i class="fas fa-trophy"></i> 计算综合评分
+                </button>
+                <div id="topsis-results" style="display:none; margin-top: 1.5rem;">
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;"><i class="fas fa-chart-bar"></i> 综合评分结果</h4>
+                    <div id="topsis-cards"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module Integration Flow -->
+    <section class="flow-section" id="flow">
+        <div class="section-header fade-in">
+            <h2>模块联动运行流程</h2>
+            <p>8步完整闭环，实现从数据采集到决策优化的全流程支持</p>
+        </div>
+        
+        <div class="process-flow fade-in">
+            <div class="process-step">
+                <div class="process-number">1</div>
+                <div class="process-text">
+                    <strong>经营问题识别</strong><br>
+                    <small>销量下滑/利润下降/风险积累</small>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="process-number">2</div>
+                <div class="process-text">
+                    <strong>DAAS数据采集</strong><br>
+                    <small>销售、成本、客流、库存</small>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="process-number">3</div>
+                <div class="process-text">
+                    <strong>数字化水平评估</strong><br>
+                    <small>计算DI指数，判断发展阶段</small>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="process-number">4</div>
+                <div class="process-text">
+                    <strong>CVP分析与预测</strong><br>
+                    <small>定价优化、利润预测、安全边际</small>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="process-number">5</div>
+                <div class="process-text">
+                    <strong>风险评估与预警</strong><br>
+                    <small>功效系数、现金流预警</small>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="process-number">6</div>
+                <div class="process-text">
+                    <strong>消费者行为分析</strong><br>
+                    <small>价格敏感度、复购意向</small>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="process-number">7</div>
+                <div class="process-text">
+                    <strong>AHP-TOPSIS综合评价</strong><br>
+                    <small>多方案对比、最优选择</small>
+                </div>
+            </div>
+            <div class="process-step">
+                <div class="process-number">8</div>
+                <div class="process-text">
+                    <strong>决策执行与反馈</strong><br>
+                    <small>方案实施、效果追踪、持续优化</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Scenarios -->
+    <section class="section" id="applications">
+        <div class="section-header fade-in">
+            <span class="section-number"><i class="fas fa-store"></i></span>
+            <h2>应用场景</h2>
+            <p>系统适用于各类中小商铺的经营决策支持</p>
+        </div>
+
+        <div class="app-grid fade-in">
+            <div class="app-card">
+                <div class="app-icon"><i class="fas fa-graduation-cap"></i></div>
+                <h3>校园小吃店</h3>
+                <p>面向学生群体，价格敏感度高，客流量稳定，适合套餐组合优化</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon"><i class="fas fa-coffee"></i></div>
+                <h3>社区早餐铺</h3>
+                <p>早高峰销量集中，变动成本控制关键，适合保本点分析与定价优化</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon"><i class="fas fa-glass-cheers"></i></div>
+                <h3>奶茶饮品店</h3>
+                <p>产品种类多，边际贡献分析复杂，适合产品组合与新品定价</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon"><i class="fas fa-shopping-cart"></i></div>
+                <h3>便利小店</h3>
+                <p>商品品类丰富，库存周转重要，适合风险评估与效率分析</p>
+            </div>
+            <div class="app-card">
+                <div class="app-icon"><i class="fas fa-moon"></i></div>
+                <h3>夜市摊位</h3>
+                <p>时段经营，价格灵活，适合实时定价决策与短期利润预测</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Value -->
+    <section class="section" id="value" style="background: white;">
+        <div class="section-header fade-in">
+            <h2>项目价值</h2>
+            <p>管理会计数字化转型的创新实践</p>
+        </div>
+
+        <div class="value-grid fade-in">
+            <div class="value-item">
+                <div class="value-icon"><i class="fas fa-lightbulb"></i></div>
+                <div class="value-content">
+                    <h4>决策智能化</h4>
+                    <p>将传统经验判断升级为数据驱动的智能决策，降低经营风险</p>
+                </div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon"><i class="fas fa-clock"></i></div>
+                <div class="value-content">
+                    <h4>效率提升化</h4>
+                    <p>实时数据分析，快速响应市场变化，抓住每一个盈利机会</p>
+                </div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                <div class="value-content">
+                    <h4>成本精细化</h4>
+                    <p>精准的成本核算与变动成本分析，消除隐性浪费</p>
+                </div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon"><i class="fas fa-chart-pie"></i></div>
+                <div class="value-content">
+                    <h4>管理数据化</h4>
+                    <p>构建数字化经营看板，让管理会计真正服务于小微企业</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- References -->
+    <section class="section" id="references">
+        <div class="section-header fade-in">
+            <h2>参考文献</h2>
+        </div>
+
+        <div class="card fade-in">
+            <div class="references">
+                <div class="reference-item">[1] 孙茂竹, 姚岳. 管理会计学(第九版)[M]. 北京: 中国人民大学出版社, 2020.</div>
+                <div class="reference-item">[2] 财政部. 管理会计应用指引第401号——本量利分析[Z]. 2017.</div>
+                <div class="reference-item">[3] 财政部. 管理会计应用指引第602号——内控控制[J]. 财务与会计, 2018.</div>
+                <div class="reference-item">[4] 刘运国. 管理会计学(第二版)[M]. 北京: 高等教育出版社, 2019.</div>
+                <div class="reference-item">[5] Saaty T L. The Analytic Hierarchy Process: Planning, Priority Setting, Resource Allocation[M]. New York: McGraw-Hill, 1980.</div>
+                <div class="reference-item">[6] Hwang C L, Yoon K. Multiple Attribute Decision Making: Methods and Applications[M]. Berlin: Springer-Verlag, 1981.</div>
+                <div class="reference-item">[7] 国家发改委. 功效系数法在企业综合评价中的应用研究[R]. 2020.</div>
+                <div class="reference-item">[8] Kotler P. Marketing Management: Analysis, Planning, Implementation and Control[M]. 14th ed. Upper Saddle River: Pearson, 2012.</div>
+                <div class="reference-item">[9] 宁骚. 公共政策学[M]. 北京: 高等教育出版社, 2018.</div>
+                <div class="reference-item">[10] 陈志斌. 管理会计学[M]. 北京: 清华大学出版社, 2017.</div>
+                <div class="reference-item">[11] Becker G S. Human Capital: A Theoretical and Empirical Analysis[M]. Chicago: University of Chicago Press, 1964.</div>
+                <div class="reference-item">[12] 冯巧根. 管理会计学[M]. 北京: 中国人民大学出版社, 2018.</div>
+                <div class="reference-item">[13] Churchill G A, Peter J P. Marketing: Creating Value for Customers[M]. 3rd ed. Boston: McGraw-Hill, 2014.</div>
+                <div class="reference-item">[14] 张先治. 管理会计理论框架研究[M]. 大连: 东北财经大学出版社, 2017.</div>
+                <div class="reference-item">[15] Shapiro C, Varian H R. Information Rules: A Strategic Guide to the Network Economy[M]. Boston: Harvard Business School Press, 1999.</div>
+                <div class="reference-item">[16] 孟生旺. 金融数学与金融工程[M]. 北京: 中国人民大学出版社, 2018.</div>
+                <div class="reference-item">[17] Porter M E. Competitive Strategy: Techniques for Analyzing Industries and Competitors[M]. New York: Free Press, 1980.</div>
+                <div class="reference-item">[18] Kaplan R S, Norton D P. The Balanced Scorecard: Translating Strategy into Action[M]. Boston: Harvard Business School Press, 1996.</div>
+                <div class="reference-item">[19] 郭晓梅. 管理会计学[M]. 北京: 中国财政经济出版社, 2019.</div>
+                <div class="reference-item">[20] Armstrong J S. Principles of Forecasting: A Handbook for Researchers and Practitioners[M]. New York: Springer, 2001.</div>
+                <div class="reference-item">[21] 朱学义. 管理会计(第四版)[M]. 北京: 机械工业出版社, 2020.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><i class="fas fa-chart-line"></i> 中小商铺经营管理会计决策支持系统</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.7;">基于CVP分析与消费者行为分析的数字化经营优化平台</p>
+    </footer>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Navigation functionality
+        const nav = document.getElementById('navbar');
+        const navMenu = document.getElementById('navMenu');
+        const navToggle = document.getElementById('navToggle');
+        const backToTop = document.getElementById('backToTop');
+
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+                backToTop.classList.add('visible');
+            } else {
+                nav.classList.remove('scrolled');
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 80;
+                    const position = target.offsetTop - offset;
+                    window.scrollTo({ top: position, behavior: 'smooth' });
+                }
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Active nav link on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            document.querySelectorAll('.nav-menu a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === '#' + current) {
+                    a.classList.add('active');
+                }
+            });
+        });
+
+        // Fade in animations
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // ==================== Module 1: Digital System Calculator ====================
+        function calculateDI() {
+            const ds = parseFloat(document.getElementById('di1-ds').value) || 0;
+            const total = parseFloat(document.getElementById('di1-total').value) || 1;
+            const dq = parseFloat(document.getElementById('di1-dq').value) || 0;
+            const dt = parseFloat(document.getElementById('di1-dt').value) || 0;
+
+            const dc = (ds / total) * 100;
+            const dm = dq;
+            const dr = dt;
+            const di = 0.4 * dc + 0.3 * dm + 0.3 * dr;
+
+            let stage = '';
+            let stageClass = '';
+            if (di >= 80) {
+                stage = '<span class="result-badge badge-success">卓越级</span>';
+            } else if (di >= 60) {
+                stage = '<span class="result-badge badge-info">优化级</span>';
+            } else if (di >= 40) {
+                stage = '<span class="result-badge badge-warning">规范级</span>';
+            } else {
+                stage = '<span class="result-badge badge-danger">初始级</span>';
+            }
+
+            document.getElementById('di1-dc').textContent = dc.toFixed(2) + '%';
+            document.getElementById('di1-dm').textContent = dm.toFixed(2);
+            document.getElementById('di1-dr').textContent = dr.toFixed(2);
+            document.getElementById('di1-di').textContent = di.toFixed(2);
+            document.getElementById('di1-stage').innerHTML = stage;
+            document.getElementById('di1-results').style.display = 'block';
+        }
+
+        // ==================== Module 2: Smart Pricing Calculator ====================
+        function calculatePricing() {
+            const p = parseFloat(document.getElementById('price-p').value) || 0;
+            const vc = parseFloat(document.getElementById('price-vc').value) || 0;
+            const fc = parseFloat(document.getElementById('price-fc').value) || 0;
+            const q = parseFloat(document.getElementById('price-q').value) || 0;
+
+            if (p <= vc) {
+                alert('单价必须大于变动成本，否则无法盈利！');
+                return;
+            }
+
+            const mc = p - vc;
+            const mcr = (mc / p) * 100;
+            const bep = Math.ceil(fc / mc);
+            const profit = (p - vc) * q - fc;
+            const safetyQty = q - bep;
+            const safetyRate = (safetyQty / q) * 100;
+
+            let safetyLabel = '';
+            if (safetyRate > 40) {
+                safetyLabel = '<span class="result-badge badge-success">安全 (' + safetyRate.toFixed(1) + '%)</span>';
+            } else if (safetyRate > 20) {
+                safetyLabel = '<span class="result-badge badge-info">较安全 (' + safetyRate.toFixed(1) + '%)</span>';
+            } else if (safetyRate > 10) {
+                safetyLabel = '<span class="result-badge badge-warning">警戒 (' + safetyRate.toFixed(1) + '%)</span>';
+            } else {
+                safetyLabel = '<span class="result-badge badge-danger">危险 (' + safetyRate.toFixed(1) + '%)</span>';
+            }
+
+            document.getElementById('price-mc').textContent = mc.toFixed(2) + ' 元';
+            document.getElementById('price-mcr').textContent = mcr.toFixed(2) + '%';
+            document.getElementById('price-bep').textContent = bep + ' 件';
+            document.getElementById('price-profit').textContent = profit.toFixed(2) + ' 元';
+            document.getElementById('price-safety').textContent = safetyQty + ' 件';
+            document.getElementById('price-safety-rate').innerHTML = safetyLabel;
+            document.getElementById('price-results').style.display = 'block';
+        }
+
+        function calculatePriceChange() {
+            const p0 = parseFloat(document.getElementById('price0').value) || 0;
+            const p1 = parseFloat(document.getElementById('price1').value) || 0;
+            const q0 = parseFloat(document.getElementById('q0').value) || 0;
+            const vc = parseFloat(document.getElementById('vc-change').value) || 0;
+
+            const ao = p0 - p1;
+            const ro = (ao / p0) * 100;
+            
+            const mc0 = p0 - vc;
+            const mc1 = p1 - vc;
+            
+            const qCritical = (mc0 * q0 - fc) / (mc0 - mc1);
+            const minQ = Math.ceil(qCritical);
+            const declineRate = ((q0 - minQ) / q0) * 100;
+
+            document.getElementById('change-ao').textContent = ao.toFixed(2) + ' 元';
+            document.getElementById('change-ro').textContent = ro.toFixed(2) + '%';
+            document.getElementById('change-critical').textContent = declineRate.toFixed(1) + '%';
+            document.getElementById('change-min-q').textContent = minQ + ' 件';
+            
+            const advice = document.getElementById('change-advice');
+            const message = document.getElementById('change-message');
+            
+            if (p1 > p0) {
+                message.textContent = '涨价方案：销量下降不超过' + declineRate.toFixed(1) + '%即可保持盈利';
+                advice.style.display = 'flex';
+                advice.className = 'alert alert-success';
+            } else if (p1 < p0) {
+                message.textContent = '降价方案：需要销量提升' + Math.abs(declineRate).toFixed(1) + '%才能弥补损失';
+                advice.style.display = 'flex';
+                advice.className = 'alert alert-warning';
+            } else {
+                advice.style.display = 'none';
+            }
+            
+            document.getElementById('change-results').style.display = 'block';
+        }
+
+        // ==================== Module 3: Product Mix Calculator ====================
+        function calculateSingle() {
+            const price = parseFloat(document.getElementById('single-price').value) || 0;
+            const cost = parseFloat(document.getElementById('single-cost').value) || 0;
+            const qty = parseFloat(document.getElementById('single-qty').value) || 0;
+            const fc = parseFloat(document.getElementById('single-fc').value) || 0;
+
+            const mc = price - cost;
+            const mcr = (mc / price) * 100;
+            const tcm = mc * qty;
+            const profit = tcm - fc;
+
+            document.getElementById('single-mc').textContent = mc.toFixed(2) + ' 元';
+            document.getElementById('single-mcr').textContent = mcr.toFixed(2) + '%';
+            document.getElementById('single-tcm').textContent = tcm.toFixed(2) + ' 元';
+            document.getElementById('single-profit').textContent = profit.toFixed(2) + ' 元';
+            document.getElementById('single-results').style.display = 'block';
+        }
+
+        function calculateCombo() {
+            const comboPrice = parseFloat(document.getElementById('combo-price').value) || 0;
+            const comboQty = parseFloat(document.getElementById('combo-qty').value) || 1;
+            const comboCost = parseFloat(document.getElementById('combo-cost').value) || 0;
+            const comboSales = parseFloat(document.getElementById('combo-sales').value) || 0;
+            
+            const singlePrice = parseFloat(document.getElementById('single2-price').value) || 0;
+            const singleCost = parseFloat(document.getElementById('single2-cost').value) || 0;
+            const singleSales = parseFloat(document.getElementById('single2-sales').value) || 0;
+            
+            const fc = parseFloat(document.getElementById('combo-fc').value) || 0;
+
+            const comboRevenue = comboPrice * comboSales;
+            const comboMC = comboPrice - comboCost;
+            const comboMCR = (comboMC / comboPrice) * 100;
+            const comboProfit = comboMC * comboSales - fc;
+
+            const singleRevenue = singlePrice * singleSales;
+            const singleMC = singlePrice - singleCost;
+            const singleMCR = (singleMC / singlePrice) * 100;
+            const singleProfit = singleMC * singleSales - fc;
+
+            document.getElementById('combo-revenue').textContent = comboRevenue.toFixed(2) + ' 元';
+            document.getElementById('single2-revenue').textContent = singleRevenue.toFixed(2) + ' 元';
+            document.getElementById('combo-revenue-better').textContent = comboRevenue > singleRevenue ? '套餐' : '单品';
+            document.getElementById('combo-revenue-better').style.color = 'var(--accent)';
+
+            document.getElementById('combo-mcr').textContent = comboMCR.toFixed(2) + '%';
+            document.getElementById('single2-mcr').textContent = singleMCR.toFixed(2) + '%';
+            document.getElementById('combo-mcr-better').textContent = comboMCR > singleMCR ? '套餐' : '单品';
+            document.getElementById('combo-mcr-better').style.color = 'var(--accent)';
+
+            document.getElementById('combo-profit').textContent = comboProfit.toFixed(2) + ' 元';
+            document.getElementById('single2-profit').textContent = singleProfit.toFixed(2) + ' 元';
+            document.getElementById('combo-profit-better').textContent = comboProfit > singleProfit ? '套餐 ✓' : '单品 ✓';
+            document.getElementById('combo-profit-better').style.color = 'var(--success)';
+            document.getElementById('combo-profit-better').style.fontWeight = 'bold';
+
+            document.getElementById('combo-results').style.display = 'block';
+        }
+
+        // ==================== Module 4: Profit Prediction Calculator ====================
+        function calculateProfit() {
+            const p = parseFloat(document.getElementById('pred-p').value) || 0;
+            const vc = parseFloat(document.getElementById('pred-vc').value) || 0;
+            const fc = parseFloat(document.getElementById('pred-fc').value) || 0;
+            const q = parseFloat(document.getElementById('pred-q').value) || 0;
+            const tp = parseFloat(document.getElementById('pred-tp').value) || 0;
+
+            const mc = p - vc;
+            const mcr = (mc / p) * 100;
+            const bep = Math.ceil(fc / mc);
+            const profit = (p - vc) * q - fc;
+            const targetQ = Math.ceil((fc + tp) / mc);
+            const sm = q - bep;
+            const smr = (sm / q) * 100;
+
+            let smrLabel = '';
+            if (smr > 40) {
+                smrLabel = '<span class="result-badge badge-success">安全 (' + smr.toFixed(1) + '%)</span>';
+            } else if (smr > 20) {
+                smrLabel = '<span class="result-badge badge-info">较安全 (' + smr.toFixed(1) + '%)</span>';
+            } else if (smr > 10) {
+                smrLabel = '<span class="result-badge badge-warning">警戒 (' + smr.toFixed(1) + '%)</span>';
+            } else {
+                smrLabel = '<span class="result-badge badge-danger">危险 (' + smr.toFixed(1) + '%)</span>';
+            }
+
+            document.getElementById('pred-mc').textContent = mc.toFixed(2) + ' 元';
+            document.getElementById('pred-mcr').textContent = mcr.toFixed(2) + '%';
+            document.getElementById('pred-bep').textContent = bep + ' 件';
+            document.getElementById('pred-profit').textContent = profit.toFixed(2) + ' 元';
+            document.getElementById('pred-target-q').textContent = targetQ + ' 件';
+            document.getElementById('pred-sm').textContent = sm + ' 件';
+            document.getElementById('pred-smr').innerHTML = smrLabel;
+            document.getElementById('pred-results').style.display = 'block';
+        }
+
+        function calculateSensitivity() {
+            const profit = parseFloat(document.getElementById('sense-profit').value) || 100;
+            const priceChange = parseFloat(document.getElementById('sense-price').value) || 10;
+            const qtyChange = parseFloat(document.getElementById('sense-qty').value) || 10;
+            const costChange = parseFloat(document.getElementById('sense-cost').value) || 10;
+
+            const priceSF = priceChange;
+            const qtySF = qtyChange;
+            const costSF = costChange;
+
+            let analysis = '';
+            if (priceSF >= qtySF && priceSF >= costSF) {
+                analysis = '价格是最敏感因素，价格变动1%会导致利润同向变动' + priceSF.toFixed(1) + '%。';
+            } else if (qtySF >= priceSF && qtySF >= costSF) {
+                analysis = '销量是最敏感因素，销量变动1%会导致利润同向变动' + qtySF.toFixed(1) + '%。';
+            } else {
+                analysis = '成本是最敏感因素，成本变动1%会导致利润反向变动' + costSF.toFixed(1) + '%。';
+            }
+
+            document.getElementById('sense-price-sf').textContent = priceSF.toFixed(1);
+            document.getElementById('sense-qty-sf').textContent = qtySF.toFixed(1);
+            document.getElementById('sense-cost-sf').textContent = costSF.toFixed(1);
+            document.getElementById('sense-analysis').textContent = analysis;
+            document.getElementById('sense-results').style.display = 'block';
+        }
+
+        // ==================== Module 5: Risk Assessment Calculator ====================
+        function calculateRisk() {
+            const roe = parseFloat(document.getElementById('risk-roe').value) || 0;
+            const npm = parseFloat(document.getElementById('risk-npm').value) || 0;
+            const inv = parseFloat(document.getElementById('risk-inv').value) || 0;
+            const ar = parseFloat(document.getElementById('risk-ar').value) || 0;
+            const cs = parseFloat(document.getElementById('risk-cs').value) || 0;
+            const rr = parseFloat(document.getElementById('risk-rr').value) || 0;
+
+            // Standard values for efficiency coefficients
+            const weights = [0.20, 0.15, 0.15, 0.10, 0.20, 0.20];
+            const excellent = [20, 12, 12, 15, 95, 60];
+            const poor = [5, 3, 4, 5, 70, 20];
+            const values = [roe, npm, inv, ar, cs, rr];
+
+            let G = 0;
+            const E = [];
+
+            for (let i = 0; i < 6; i++) {
+                let ei;
+                if (i < 4) { // Positive indicators
+                    ei = 60 + 40 * (values[i] - poor[i]) / (excellent[i] - poor[i]);
+                } else { // Customer indicators
+                    ei = 60 + 40 * (values[i] - poor[i]) / (excellent[i] - poor[i]);
+                }
+                ei = Math.max(0, Math.min(100, ei));
+                E.push(ei);
+                G += ei * weights[i];
+            }
+
+            let level = '';
+            let status = '';
+            let levelClass = '';
+
+            if (G >= 80) {
+                level = '<span class="result-badge risk-none">无警</span>';
+                status = '经营状况优良，继续保持';
+                levelClass = 'badge-success';
+            } else if (G >= 70) {
+                level = '<span class="result-badge risk-light">轻警</span>';
+                status = '存在小问题，需关注改进';
+                levelClass = 'badge-warning';
+            } else if (G >= 60) {
+                level = '<span class="result-badge risk-medium">中警</span>';
+                status = '存在较大问题，需重点关注';
+                levelClass = 'badge-danger';
+            } else if (G >= 50) {
+                level = '<span class="result-badge risk-heavy">重警</span>';
+                status = '存在严重问题，需紧急处理';
+                levelClass = 'badge-danger';
+            } else {
+                level = '<span class="result-badge risk-extreme">巨警</span>';
+                status = '面临生存危机，需立即整改';
+                levelClass = 'badge-danger';
+            }
+
+            document.getElementById('risk-roe-e').textContent = E[0].toFixed(2);
+            document.getElementById('risk-npm-e').textContent = E[1].toFixed(2);
+            document.getElementById('risk-inv-e').textContent = E[2].toFixed(2);
+            document.getElementById('risk-ar-e').textContent = E[3].toFixed(2);
+            document.getElementById('risk-cs-e').textContent = E[4].toFixed(2);
+            document.getElementById('risk-rr-e').textContent = E[5].toFixed(2);
+            document.getElementById('risk-g').textContent = G.toFixed(2);
+            document.getElementById('risk-level').innerHTML = level;
+            document.getElementById('risk-status').textContent = status;
+            document.getElementById('risk-results').style.display = 'block';
+        }
+
+        // ==================== Module 6: Consumer Behavior Calculator ====================
+        function calculateCBS() {
+            const se = parseFloat(document.getElementById('cbs-se').value) || 0;
+            const ee = parseFloat(document.getElementById('cbs-ee').value) || 0;
+            const be = parseFloat(document.getElementById('cbs-be').value) || 0;
+            const te = parseFloat(document.getElementById('cbs-te').value) || 0;
+            const pq = parseFloat(document.getElementById('cbs-pq').value) || 0;
+            const pv = parseFloat(document.getElementById('cbs-pv').value) || 0;
+            const ps = parseFloat(document.getElementById('cbs-ps').value) || 0;
+            const si = parseFloat(document.getElementById('cbs-si').value) || 0;
+
+            const ce = (se + ee + be + te) / 4;
+            const rb = 0.3 * se + 0.25 * ee + 0.2 * be + 0.25 * te + 0.1 * (100 - ps) - 0.2 * ps;
+            const pi = 0.3 * pq + 0.3 * pv + 0.2 * si - 0.2 * ps;
+            
+            const w1 = 0.25, w2 = 0.25, w3 = 0.2, w4 = 0.15, w5 = 0.15;
+            const cbs = 100 * (w1 * pi / 100 + w2 * rb / 100 + w3 * si / 100 + w4 * pv / 100 - w5 * ps / 100);
+
+            let type = '';
+            let advice = '';
+
+            if (ps > 70 && si < 50) {
+                type = '<span class="result-badge badge-danger">高价格敏感型</span>';
+                advice = '推送优惠券、满减活动，利用价格促销吸引购买';
+            } else if (ps < 50 && pv > 70) {
+                type = '<span class="result-badge badge-success">低价格敏感型</span>';
+                advice = '强调品质和服务，提供增值服务而非降价';
+            } else if (si > 60 && ce > 75) {
+                type = '<span class="result-badge badge-info">复购潜力型</span>';
+                advice = '建立会员制度，积分奖励，提升忠诚度';
+            } else if (pi < 60 && pv < 60) {
+                type = '<span class="result-badge badge-warning">门店印象短板型</span>';
+                advice = '改善服务流程，提升产品体验，加强店铺形象';
+            } else {
+                type = '<span class="result-badge badge-info">综合型</span>';
+                advice = '多维度营销，结合产品品质与服务体验';
+            }
+
+            document.getElementById('cbs-ce').textContent = ce.toFixed(2);
+            document.getElementById('cbs-rb').textContent = rb.toFixed(2);
+            document.getElementById('cbs-pi').textContent = pi.toFixed(2);
+            document.getElementById('cbs-score').textContent = cbs.toFixed(2);
+            document.getElementById('cbs-type').innerHTML = type;
+            document.getElementById('cbs-advice').textContent = advice;
+            document.getElementById('cbs-results').style.display = 'block';
+        }
+
+        // ==================== Module 7: TOPSIS Calculator ====================
+        function calculateTOPSIS() {
+            const weights = [0.30, 0.25, 0.25, 0.20];
+
+            const plan1 = {
+                name: document.getElementById('plan1-name').value || '方案一',
+                profit: parseFloat(document.getElementById('plan1-profit').value) || 0,
+                efficiency: parseFloat(document.getElementById('plan1-efficiency').value) || 0,
+                customer: parseFloat(document.getElementById('plan1-customer').value) || 0,
+                risk: parseFloat(document.getElementById('plan1-risk').value) || 0
+            };
+
+            const plan2 = {
+                name: document.getElementById('plan2-name').value || '方案二',
+                profit: parseFloat(document.getElementById('plan2-profit').value) || 0,
+                efficiency: parseFloat(document.getElementById('plan2-efficiency').value) || 0,
+                customer: parseFloat(document.getElementById('plan2-customer').value) || 0,
+                risk: parseFloat(document.getElementById('plan2-risk').value) || 0
+            };
+
+            const plan3 = {
+                name: document.getElementById('plan3-name').value || '方案三',
+                profit: parseFloat(document.getElementById('plan3-profit').value) || 0,
+                efficiency: parseFloat(document.getElementById('plan3-efficiency').value) || 0,
+                customer: parseFloat(document.getElementById('plan3-customer').value) || 0,
+                risk: parseFloat(document.getElementById('plan3-risk').value) || 0
+            };
+
+            const plans = [plan1, plan2, plan3];
+
+            // Normalize
+            const normalized = [];
+            for (let j = 0; j < 4; j++) {
+                const sum = Math.sqrt(plans.reduce((acc, p) => {
+                    const vals = [p.profit, p.efficiency, p.customer, p.risk];
+                    return acc + vals[j] * vals[j];
+                }, 0));
+                
+                plans.forEach(p => {
+                    const vals = [p.profit, p.efficiency, p.customer, p.risk];
+                    if (!normalized[plans.indexOf(p)]) normalized[plans.indexOf(p)] = [];
+                    normalized[plans.indexOf(p)][j] = vals[j] / sum;
+                });
+            }
+
+            // Weighted normalized
+            const weighted = normalized.map(row => row.map((v, j) => v * weights[j]));
+
+            // Ideal solutions
+            const idealBest = weighted.map((row, j) => Math.max(...weighted.map(r => r[j])));
+            const idealWorst = weighted.map((row, j) => Math.min(...weighted.map(r => r[j])));
+
+            // Calculate distances and closeness
+            const results = plans.map((plan, i) => {
+                const dBest = Math.sqrt(weighted[i].reduce((acc, v, j) => acc + Math.pow(v - idealBest[j], 2), 0));
+                const dWorst = Math.sqrt(weighted[i].reduce((acc, v, j) => acc + Math.pow(v - idealWorst[j], 2), 0));
+                const closeness = dWorst / (dBest + dWorst);
+                return { ...plan, closeness, dBest, dWorst };
+            });
+
+            results.sort((a, b) => b.closeness - a.closeness);
+
+            const cardsHtml = results.map((r, i) => {
+                const isWinner = i === 0;
+                return `
+                    <div class="solution-card ${isWinner ? 'winner' : ''}">
+                        ${isWinner ? '<span class="solution-badge"><i class="fas fa-trophy"></i> 推荐方案</span>' : ''}
+                        <div class="solution-name">${i + 1}. ${r.name}</div>
+                        <div class="calc-results" style="margin-top: 0.5rem;">
+                            <div class="result-item">
+                                <span class="result-label">贴近度 Ci</span>
+                                <span class="result-value highlight">${(r.closeness * 100).toFixed(2)}%</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">至最优距离 D+</span>
+                                <span class="result-value">${r.dBest.toFixed(4)}</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">至最劣距离 D-</span>
+                                <span class="result-value">${r.dWorst.toFixed(4)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('topsis-cards').innerHTML = cardsHtml;
+            document.getElementById('topsis-results').style.display = 'block';
+        }
+
+        // Initialize with default values for Module 1
+        document.getElementById('di1-ds').value = 8;
+        document.getElementById('di1-total').value = 12;
+        document.getElementById('di1-dq').value = 85;
+        document.getElementById('di1-dt').value = 90;
+    </script>
+</body>
+</html>
